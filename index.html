@@ -1,1 +1,705 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>個人發展系統｜規律生活從最小行動開始</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
 
+        body {
+            background: #f4f7fc;
+            padding: 2rem 1rem;
+            color: #1e2a3e;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        /* 標題與副標 */
+        .hero {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #2b6e4f, #1e4a6e);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+        }
+
+        .hero p {
+            color: #4a627a;
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+
+        /* 卡片通用樣式 */
+        .card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.2rem 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+            border: 1px solid #e2edf2;
+        }
+
+        .form-card {
+            margin-bottom: 2rem;
+            background: white;
+        }
+
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            justify-content: space-between;
+            align-items: flex-end;
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            border: 1px solid #e2edf2;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            min-width: 150px;
+        }
+
+        .filter-group label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #5b7a9a;
+        }
+
+        select, input[type="text"], input[type="date"] {
+            padding: 0.6rem 0.8rem;
+            border-radius: 2rem;
+            border: 1px solid #cbdde6;
+            background: #fff;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #2b6e4f;
+            box-shadow: 0 0 0 3px rgba(43,110,79,0.2);
+        }
+
+        button {
+            background: #2b6e4f;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.85rem;
+        }
+
+        button:hover {
+            background: #1e5a41;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #2b6e4f;
+            color: #2b6e4f;
+        }
+
+        .btn-outline:hover {
+            background: #e9f3ef;
+            transform: none;
+        }
+
+        .btn-danger {
+            background: #c44536;
+        }
+
+        .btn-danger:hover {
+            background: #a53628;
+        }
+
+        .btn-sm {
+            padding: 0.3rem 0.8rem;
+            font-size: 0.75rem;
+        }
+
+        .records-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .record-card {
+            background: white;
+            border-radius: 1.2rem;
+            padding: 1.2rem;
+            border-left: 5px solid #2b6e4f;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a3a;
+            word-break: break-word;
+        }
+
+        .badge {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.7rem;
+            border-radius: 2rem;
+            background: #eef2f5;
+            color: #2c5a7a;
+            font-weight: 600;
+        }
+
+        .badge.type {
+            background: #e0f0ea;
+            color: #1f6e4a;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #4a627a;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .status-control {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 0.2rem;
+        }
+
+        .due-edit {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.3rem;
+        }
+
+        select.status-select {
+            padding: 0.2rem 0.6rem;
+            font-size: 0.75rem;
+            border-radius: 2rem;
+            background: #f9fbfd;
+        }
+
+        .created-date {
+            font-size: 0.7rem;
+            color: #8da0b0;
+            margin-top: 0.25rem;
+        }
+
+        hr {
+            margin: 0.2rem 0;
+            border-color: #eef2f5;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: #fefefe;
+            border-radius: 2rem;
+            color: #7d9ab0;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.75rem;
+            color: #7c9ab3;
+        }
+
+        @media (max-width: 700px) {
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .records-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="hero">
+        <h1>📋 個人發展系統</h1>
+        <p>帶給您更規律的生活 — 最小化行動指南</p>
+    </div>
+
+    <!-- 新增表單區 -->
+    <div class="card form-card">
+        <h3 style="margin-bottom: 1rem;">✨ 建立新記錄</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end;">
+            <div style="flex: 2; min-width: 180px;">
+                <label style="font-size:0.75rem; font-weight:600;">📌 標題 *</label>
+                <input type="text" id="titleInput" placeholder="例如：每天跑步10分鐘" style="width: 100%;">
+            </div>
+            <div style="flex: 1; min-width: 130px;">
+                <label style="font-size:0.75rem; font-weight:600;">🏷️ 類型</label>
+                <select id="typeSelect">
+                    <option value="habit">習慣 (habit)</option>
+                    <option value="goal">目標 (goal)</option>
+                    <option value="direction">發展方向 (direction)</option>
+                    <option value="plan">計劃 (plan)</option>
+                    <option value="task">任務 (task)</option>
+                </select>
+            </div>
+            <div style="flex: 1; min-width: 140px;">
+                <label style="font-size:0.75rem; font-weight:600;">📅 預計完成日 (dueDate)</label>
+                <input type="date" id="dueDateInput">
+            </div>
+            <div>
+                <button id="createBtn">➕ 新增記錄</button>
+            </div>
+        </div>
+        <div style="font-size:0.7rem; margin-top: 0.6rem; color:#6f8faa;">＊狀態預設為 Active，可在卡片中切換</div>
+    </div>
+
+    <!-- 篩選列 -->
+    <div class="filter-bar">
+        <div class="filter-group">
+            <label>🔖 狀態篩選</label>
+            <select id="statusFilter">
+                <option value="all">全部</option>
+                <option value="Active">Active</option>
+                <option value="Done">Done</option>
+                <option value="Cancelled">Cancelled</option>
+                <option value="To Do">To Do</option>
+                <option value="Planned">Planned</option>
+                <option value="Waiting">Waiting</option>
+                <option value="Paused">Paused</option>
+                <option value="Inbox">Inbox</option>
+                <option value="Idea">Idea</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>📂 類型篩選</label>
+            <select id="typeFilter">
+                <option value="all">全部</option>
+                <option value="habit">habit (習慣)</option>
+                <option value="goal">goal (目標)</option>
+                <option value="direction">direction (發展方向)</option>
+                <option value="plan">plan (計劃)</option>
+                <option value="task">task (任務)</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>⚡ 快速操作</label>
+            <button id="resetFilterBtn" class="btn-outline btn-sm">清除篩選</button>
+        </div>
+    </div>
+
+    <!-- 記錄列表區 -->
+    <div id="recordsContainer" class="records-grid">
+        <!-- 動態渲染 -->
+        <div class="empty-state">✨ 新增第一筆習慣或目標，展開規律生活</div>
+    </div>
+    <footer>💾 資料自動儲存於瀏覽器 localStorage · 狀態可自由切換 · 點擊 Due 可編輯日期</footer>
+</div>
+
+<script>
+    // ---------- 全域變數 ----------
+    let allRecords = [];         // 存放所有記錄
+    let currentStatusFilter = "all";
+    let currentTypeFilter = "all";
+
+    // ---------- 輔助函式：儲存整個陣列至 localStorage ----------
+    function persistToLocalStorage(records) {
+        localStorage.setItem("records", JSON.stringify(records));
+    }
+
+    // ---------- loadData : 從 localStorage 載入資料 ----------
+    function loadData() {
+        const stored = localStorage.getItem("records");
+        if (stored) {
+            try {
+                allRecords = JSON.parse(stored);
+                // 保證每個 record 都有必要欄位（避免舊資料缺 dueDate）
+                allRecords = allRecords.map(rec => ({
+                    ...rec,
+                    dueDate: rec.dueDate !== undefined ? rec.dueDate : null,
+                    status: rec.status || "Active",
+                    type: rec.type || "habit",
+                    title: rec.title || "未命名",
+                }));
+            } catch(e) { allRecords = []; }
+        } else {
+            // 示範初始資料
+            allRecords = [
+                {
+                    id: "sample1",
+                    createdAt: new Date(Date.now() - 86400000).toISOString(),
+                    status: "Active",
+                    title: "每天冥想 5 分鐘",
+                    type: "habit",
+                    dueDate: null,
+                },
+                {
+                    id: "sample2",
+                    createdAt: new Date(Date.now() - 172800000).toISOString(),
+                    status: "Done",
+                    title: "讀完《原子習慣》第一章",
+                    type: "task",
+                    dueDate: "2026-05-20",
+                },
+                {
+                    id: "sample3",
+                    createdAt: new Date().toISOString(),
+                    status: "Planned",
+                    title: "建立個人知識庫",
+                    type: "direction",
+                    dueDate: "2026-06-01",
+                }
+            ];
+            persistToLocalStorage(allRecords);
+        }
+        return allRecords;
+    }
+
+    // ---------- saveData(record) : 新增或更新單筆記錄到整體陣列 ----------
+    function saveData(record) {
+        // record 必須包含完整資訊，判斷是否存在 (透過 id)
+        const existingIndex = allRecords.findIndex(r => r.id === record.id);
+        if (existingIndex !== -1) {
+            // 更新
+            allRecords[existingIndex] = { ...allRecords[existingIndex], ...record };
+        } else {
+            // 新增
+            allRecords.push(record);
+        }
+        persistToLocalStorage(allRecords);
+        // 重新渲染 (使用當前過濾條件)
+        applyFiltersAndRender();
+    }
+
+    // ---------- updateRecord(id, changes) : 更新特定欄位 ----------
+    function updateRecord(id, changes) {
+        const index = allRecords.findIndex(r => r.id === id);
+        if (index !== -1) {
+            // 合併改動
+            allRecords[index] = { ...allRecords[index], ...changes };
+            persistToLocalStorage(allRecords);
+            applyFiltersAndRender();
+            return true;
+        }
+        return false;
+    }
+
+    // ---------- createRecord(formData) : 建立新 record 物件 ----------
+    function createRecord(formData) {
+        const { title, type, dueDate } = formData;
+        const nowISO = new Date().toISOString();
+        const newId = Date.now() + '-' + Math.random().toString(36).substring(2, 8);
+        return {
+            id: newId,
+            createdAt: nowISO,
+            status: "Active",          // 預設 active
+            title: title.trim(),
+            type: type,
+            dueDate: dueDate || null,   // 空字串轉 null
+        };
+    }
+
+    // ---------- 渲染函式：根據傳入的 recordsToShow 繪製卡片 ----------
+    function renderList(recordsToShow) {
+        const container = document.getElementById("recordsContainer");
+        if (!recordsToShow.length) {
+            container.innerHTML = `<div class="empty-state">📭 沒有符合的記錄，試試新增或切換篩選條件</div>`;
+            return;
+        }
+
+        // 依照 createdAt 由新到舊排序 (最新在上)
+        const sorted = [...recordsToShow].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        container.innerHTML = sorted.map(record => {
+            // 格式化日期
+            const createdDate = new Date(record.createdAt);
+            const formattedCreated = `${createdDate.getFullYear()}/${createdDate.getMonth()+1}/${createdDate.getDate()} ${createdDate.getHours().toString().padStart(2,'0')}:${createdDate.getMinutes().toString().padStart(2,'0')}`;
+            
+            // dueDate 顯示
+            let dueDisplay = "未設定";
+            let dueRaw = record.dueDate;
+            if (dueRaw) {
+                // 若是標準日期字串，轉為本地格式
+                const dueDateObj = new Date(dueRaw);
+                if (!isNaN(dueDateObj.getTime())) {
+                    dueDisplay = `${dueDateObj.getFullYear()}/${dueDateObj.getMonth()+1}/${dueDateObj.getDate()}`;
+                } else {
+                    dueDisplay = dueRaw;
+                }
+            }
+
+            // type 顯示文字對照
+            const typeMap = {
+                habit: "習慣", goal: "目標", direction: "發展方向", plan: "計劃", task: "任務"
+            };
+            const typeLabel = typeMap[record.type] || record.type;
+
+            // 狀態選項下拉列表 (所有可能狀態)
+            const statusOptions = ["Active", "Done", "Cancelled", "To Do", "Planned", "Waiting", "Paused", "Inbox", "Idea"];
+            
+            return `
+                <div class="record-card" data-id="${record.id}">
+                    <div class="card-header">
+                        <div class="title">${escapeHtml(record.title)}</div>
+                        <div class="badge type">${escapeHtml(typeLabel)} (${record.type})</div>
+                    </div>
+                    <div class="detail-row">
+                        <span>📌 狀態：</span>
+                        <strong style="color:#2b6e4f;">${record.status}</strong>
+                    </div>
+                    <div class="status-control">
+                        <select class="status-select" data-id="${record.id}" aria-label="切換狀態">
+                            ${statusOptions.map(opt => `<option value="${opt}" ${record.status === opt ? 'selected' : ''}>${opt}</option>`).join('')}
+                        </select>
+                        <button class="btn-outline btn-sm toggle-active-done" data-id="${record.id}">🔄 Active ↔ Done</button>
+                        <button class="btn-danger btn-sm delete-record" data-id="${record.id}">🗑 刪除</button>
+                    </div>
+                    <div class="due-edit">
+                        <span style="font-size:0.8rem;">📅 到期日：</span>
+                        <span id="due-text-${record.id}" style="font-size:0.85rem; font-weight:500;">${dueDisplay}</span>
+                        <input type="date" id="due-edit-${record.id}" class="due-date-input" style="padding:0.2rem 0.5rem; font-size:0.7rem; display:none;" value="${record.dueDate || ''}">
+                        <button class="btn-outline btn-sm edit-due-btn" data-id="${record.id}">✏️ 編輯到期日</button>
+                        <button class="btn-outline btn-sm save-due-btn" data-id="${record.id}" style="display:none;">💾 儲存</button>
+                    </div>
+                    <div class="created-date">📅 建立時間：${formattedCreated}</div>
+                </div>
+            `;
+        }).join('');
+
+        // ----- 綁定卡片內事件 (狀態下拉, Active/Done按鈕, 刪除, 編輯到期日) -----
+        // 1. 狀態下拉變更事件
+        document.querySelectorAll('.status-select').forEach(select => {
+            select.removeEventListener('change', handleStatusChange);
+            select.addEventListener('change', handleStatusChange);
+        });
+        // 2. Active/Done 快速切換按鈕
+        document.querySelectorAll('.toggle-active-done').forEach(btn => {
+            btn.removeEventListener('click', handleToggleActiveDone);
+            btn.addEventListener('click', handleToggleActiveDone);
+        });
+        // 3. 刪除按鈕
+        document.querySelectorAll('.delete-record').forEach(btn => {
+            btn.removeEventListener('click', handleDeleteRecord);
+            btn.addEventListener('click', handleDeleteRecord);
+        });
+        // 4. 編輯到期日按鈕 (顯示日期選擇器)
+        document.querySelectorAll('.edit-due-btn').forEach(btn => {
+            btn.removeEventListener('click', handleEditDue);
+            btn.addEventListener('click', handleEditDue);
+        });
+        // 5. 儲存到期日按鈕
+        document.querySelectorAll('.save-due-btn').forEach(btn => {
+            btn.removeEventListener('click', handleSaveDue);
+            btn.addEventListener('click', handleSaveDue);
+        });
+        // 額外: 如果有日期輸入欄位按enter也可以 (非必要)
+    }
+
+    // ----- 事件處理函式 -----
+    function handleStatusChange(e) {
+        const select = e.target;
+        const recordId = select.getAttribute('data-id');
+        const newStatus = select.value;
+        if (recordId) {
+            updateRecord(recordId, { status: newStatus });
+        }
+    }
+
+    function handleToggleActiveDone(e) {
+        const btn = e.target;
+        const recordId = btn.getAttribute('data-id');
+        const record = allRecords.find(r => r.id === recordId);
+        if (record) {
+            const newStatus = record.status === "Active" ? "Done" : "Active";
+            updateRecord(recordId, { status: newStatus });
+        }
+    }
+
+    function handleDeleteRecord(e) {
+        const btn = e.target;
+        const recordId = btn.getAttribute('data-id');
+        if (confirm('確定刪除此記錄嗎？')) {
+            const newRecords = allRecords.filter(r => r.id !== recordId);
+            allRecords = newRecords;
+            persistToLocalStorage(allRecords);
+            applyFiltersAndRender();
+        }
+    }
+
+    function handleEditDue(e) {
+        const btn = e.target;
+        const recordId = btn.getAttribute('data-id');
+        const dueInput = document.getElementById(`due-edit-${recordId}`);
+        const dueTextSpan = document.getElementById(`due-text-${recordId}`);
+        const saveBtn = document.querySelector(`.save-due-btn[data-id="${recordId}"]`);
+        if (dueInput && saveBtn) {
+            // 顯示 input 與儲存按鈕，隱藏原本文字和編輯按鈕
+            dueInput.style.display = "inline-block";
+            saveBtn.style.display = "inline-block";
+            btn.style.display = "none";
+            if (dueTextSpan) dueTextSpan.style.display = "none";
+        }
+    }
+
+    function handleSaveDue(e) {
+        const btn = e.target;
+        const recordId = btn.getAttribute('data-id');
+        const dueInput = document.getElementById(`due-edit-${recordId}`);
+        const newDue = dueInput.value;  // YYYY-MM-DD 格式或空字串
+        const finalDue = newDue === "" ? null : newDue;
+        // 更新記錄
+        updateRecord(recordId, { dueDate: finalDue });
+        // 復原編輯界面
+        const editBtn = document.querySelector(`.edit-due-btn[data-id="${recordId}"]`);
+        const dueTextSpan = document.getElementById(`due-text-${recordId}`);
+        if (editBtn) editBtn.style.display = "inline-block";
+        if (dueInput) dueInput.style.display = "none";
+        btn.style.display = "none";
+        if (dueTextSpan) dueTextSpan.style.display = "inline";
+        // 重新渲染會更新文字，但因為 updateRecord 會觸發重新渲染，所以不需要手動改文字
+        // 但是注意重新渲染會重建 DOM，因此上述樣式設定在重繪後會消失，無需擔心
+    }
+
+    // ---------- 過濾邏輯 ----------
+    function getFilteredRecords() {
+        let filtered = [...allRecords];
+        // 狀態過濾
+        if (currentStatusFilter !== "all") {
+            filtered = filtered.filter(rec => rec.status === currentStatusFilter);
+        }
+        // 類型過濾
+        if (currentTypeFilter !== "all") {
+            filtered = filtered.filter(rec => rec.type === currentTypeFilter);
+        }
+        return filtered;
+    }
+
+    function applyFiltersAndRender() {
+        const filtered = getFilteredRecords();
+        renderList(filtered);
+    }
+
+    // 監聽篩選器變化
+    function bindFilters() {
+        const statusFilterEl = document.getElementById("statusFilter");
+        const typeFilterEl = document.getElementById("typeFilter");
+        const resetBtn = document.getElementById("resetFilterBtn");
+
+        statusFilterEl.addEventListener("change", (e) => {
+            currentStatusFilter = e.target.value;
+            applyFiltersAndRender();
+        });
+        typeFilterEl.addEventListener("change", (e) => {
+            currentTypeFilter = e.target.value;
+            applyFiltersAndRender();
+        });
+        resetBtn.addEventListener("click", () => {
+            statusFilterEl.value = "all";
+            typeFilterEl.value = "all";
+            currentStatusFilter = "all";
+            currentTypeFilter = "all";
+            applyFiltersAndRender();
+        });
+    }
+
+    // 新增記錄表單處理
+    function initFormHandler() {
+        const createBtn = document.getElementById("createBtn");
+        const titleInput = document.getElementById("titleInput");
+        const typeSelect = document.getElementById("typeSelect");
+        const dueDateInput = document.getElementById("dueDateInput");
+
+        function addNewRecord() {
+            const titleVal = titleInput.value.trim();
+            if (!titleVal) {
+                alert("請填寫標題 (目標/習慣/任務...)");
+                return;
+            }
+            const typeVal = typeSelect.value;
+            const dueVal = dueDateInput.value;  // 空字串或 YYYY-MM-DD
+            const formData = {
+                title: titleVal,
+                type: typeVal,
+                dueDate: dueVal === "" ? null : dueVal,
+            };
+            const newRecord = createRecord(formData);
+            saveData(newRecord);   // 會儲存並重新渲染
+            // 清空表單 (保留類型預設，日期清空，標題清空)
+            titleInput.value = "";
+            dueDateInput.value = "";
+            titleInput.focus();
+        }
+
+        createBtn.addEventListener("click", addNewRecord);
+        // 允許按 Enter 新增 (在標題輸入框)
+        titleInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") addNewRecord();
+        });
+    }
+
+    // XSS 防護簡單函式
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
+    }
+
+    // ---------- 初始化頁面 ----------
+    function init() {
+        loadData();               // 載入資料至 allRecords
+        bindFilters();           // 綁定篩選事件
+        initFormHandler();       // 新增表單事件
+        applyFiltersAndRender(); // 初次渲染 (根據篩選預設 all/all)
+    }
+
+    // 啟動
+    init();
+</script>
+</body>
+</html>
